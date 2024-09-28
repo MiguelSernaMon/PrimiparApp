@@ -1,0 +1,41 @@
+/* LoginPage.css */
+
+.container {
+    min-height: 100vh;
+    background-color: #f7fafc; /* equivalent to bg-gray-100 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px; /* equivalent to p-4 */
+}
+
+.card {
+    width: 100%;
+    max-width: 28rem; /* equivalent to max-w-md */
+}
+
+.card-header {
+    margin-bottom: 1rem; /* equivalent to mb-4 */
+    text-align: center;
+}
+
+.card-title {
+    font-size: 1.5rem; /* equivalent to text-2xl */
+    font-weight: bold;
+}
+
+.card-description {
+    text-align: center;
+}
+
+.form-group {
+    margin-bottom: 1rem; /* equivalent to space-y-4 */
+}
+
+.label {
+    margin-bottom: 0.5rem; /* equivalent to space-y-2 */
+}
+
+.button {
+    width: 100%; /* equivalent to w-full */
+}
