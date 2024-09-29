@@ -1,107 +1,82 @@
-
+'use client'
+import { useNavigate } from 'react-router-dom';
 import { useState } from 'react'
-import { UserPlus } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { Textarea } from "@/components/ui/textarea"
 
-export default function SignUpPage() {
-    const [firstName, setFirstName] = useState('')
-    const [lastName, setLastName] = useState('')
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
-    const [confirmPassword, setConfirmPassword] = useState('')
+async function signUp(formData: FormData) {
+    const response = await fetch('http://localhost:8080/api/usuarios', {
+        method: 'POST',
+        body: JSON.stringify(Object.fromEntries(formData)),
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    })
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault()
-        // Handle sign-up logic here
-        console.log('Sign-up attempted with:', { firstName, lastName, email, password, confirmPassword })
+    if (!response.ok) {
+        throw new Error('Failed to sign up')
+    }
+
+    return response.json()
+}
+
+export default function SignUpForm() {
+    const [isLoading, setIsLoading] = useState(false)
+    const navigate = useNavigate();
+    async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
+        event.preventDefault()
+        setIsLoading(true)
+
+        const formData = new FormData(event.currentTarget)
+        formData.append('fechaRegistro', new Date().toISOString())
+        formData.append('puntosLiga', '0')
+        formData.append('foto', 'https://i.pravatar.cc/300')
+
+        try {
+            await signUp(formData)
+            navigate('/')
+        } catch (error) {
+        } finally {
+            setIsLoading(false)
+        }
     }
 
     return (
-        <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
-            <Card className="w-full max-w-md">
-                <CardHeader className="space-y-1">
-                    <div className="flex items-center justify-center mb-4">
-                        <UserPlus className="h-12 w-12 text-primary" />
+        <div className="flex items-center justify-center min-h-screen bg-gray-100">
+            <div className="text-black w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-md">
+                <h1 className="text-2xl font-bold text-center">Sign Up</h1>
+                <form onSubmit={onSubmit} className="space-y-4">
+                    <div>
+                        <Label htmlFor="nombre" className='text-black'>Nombre</Label>
+                        <Input id="nombre" name="nombre" required />
                     </div>
-                    <CardTitle className="text-2xl font-bold text-center">Sign Up</CardTitle>
-                    <CardDescription className="text-center">
-                        Create your account to get started
-                    </CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <form onSubmit={handleSubmit}>
-                        <div className="grid gap-4">
-                            <div className="grid sm:grid-cols-2 gap-4">
-                                <div className="space-y-2">
-                                    <Label htmlFor="firstName">First Name</Label>
-                                    <Input
-                                        id="firstName"
-                                        type="text"
-                                        required
-                                        value={firstName}
-                                        onChange={(e) => setFirstName(e.target.value)}
-                                    />
-                                </div>
-                                <div className="space-y-2">
-                                    <Label htmlFor="lastName">Last Name</Label>
-                                    <Input
-                                        id="lastName"
-                                        type="text"
-                                        required
-                                        value={lastName}
-                                        onChange={(e) => setLastName(e.target.value)}
-                                    />
-                                </div>
-                            </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="email">Email</Label>
-                                <Input
-                                    id="email"
-                                    type="email"
-                                    placeholder="m@example.com"
-                                    required
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                />
-                            </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="password">Password</Label>
-                                <Input
-                                    id="password"
-                                    type="password"
-                                    required
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
-                                />
-                            </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="confirmPassword">Confirm Password</Label>
-                                <Input
-                                    id="confirmPassword"
-                                    type="password"
-                                    required
-                                    value={confirmPassword}
-                                    onChange={(e) => setConfirmPassword(e.target.value)}
-                                />
-                            </div>
-                        </div>
-                    </form>
-                </CardContent>
-                <CardFooter className="flex flex-col space-y-4">
-                    <Button className="w-full" type="submit" onClick={handleSubmit}>
-                        Create Account
+                    <div>
+                        <Label htmlFor="email">Email</Label>
+                        <Input id="email" name="email" type="email" required />
+                    </div>
+                    <div>
+                        <Label htmlFor="password">Contraseña</Label>
+                        <Input id="password" name="password" type="password" required />
+                    </div>
+                    {/* <div>
+                        <Label htmlFor="foto">Foto URL</Label>
+                        <Input id="foto" name="foto" type="url" required />
+                    </div> */}
+                    <div>
+                        <Label htmlFor="biografia">Biografía</Label>
+                        <Textarea id="biografia" name="biografia" required />
+                    </div>
+                    <div>
+                        <Label htmlFor="semestreCursando">Nivel de semestre</Label>
+                        <Input id="semestreCursando" name="semestreCursando" type="number" required />
+                    </div>
+                    <Button type="submit" className="w-full" disabled={isLoading}>
+                        {isLoading ? "Signing up..." : "Sign Up"}
                     </Button>
-                    <div className="text-sm text-center text-gray-500">
-                        Already have an account?{' '}
-                        <a href="/login" className="text-primary hover:underline">
-                            Log in
-                        </a>
-                    </div>
-                </CardFooter>
-            </Card>
+                </form>
+            </div>
         </div>
     )
 }
