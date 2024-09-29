@@ -8,11 +8,41 @@ import { LockIcon } from "lucide-react"
 export default function LoginPage() {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
+    const [errorMessage, setErrorMessage] = useState('')
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault()
         // Handle login logic here
         console.log('Login attempted with:', email, password)
+        fetch('http://localhost:8080/api/usuarios/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email, pass: password }), // Adjusted to match the expected request body
+        })
+            .then(response => {
+                // Check if the response is OK (status 200-299)
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json(); // Parse the JSON
+            })
+            .then(isLoginSuccessful => {
+                if (isLoginSuccessful) {
+                    // Handle successful login
+                    console.log('Login successful');
+                    // Redirect or update state as needed
+                } else {
+                    // Handle login failure
+                    console.error('Login failed');
+                    setErrorMessage('Invalid email or password');
+                }
+            })
+            .catch(error => {
+                console.error('Error during login:', error);
+                setErrorMessage('An error occurred during login. Please try again.');
+            });
     }
 
     return (
@@ -52,19 +82,21 @@ export default function LoginPage() {
                                 />
                             </div>
                         </div>
+                        {/* Display error message if any */}
+                        {errorMessage && <p className="text-red-500 text-center">{errorMessage}</p>}
+                        <Button className="w-full mt-4" type="submit">
+                            Sign In
+                        </Button>
                     </form>
                 </CardContent>
                 <CardFooter>
-                    <Button className="w-full" type="submit" onClick={handleSubmit}>
-                        Sign In
-                    </Button>
+                    <div className="text-sm text-center text-gray-500">
+                        Don't have an account?{' '}
+                        <a href="/sign-up" className="text-primary hover:underline">
+                            Sign Up
+                        </a>
+                    </div>
                 </CardFooter>
-                <div className="text-sm text-center text-gray-500">
-                    Don't have an account?{' '}
-                    <a href="/sign-up" className="text-primary hover:underline">
-                        Sign Up
-                    </a>
-                </div>
             </Card>
         </div>
     )
