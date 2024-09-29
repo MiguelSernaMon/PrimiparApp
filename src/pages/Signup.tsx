@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 
 async function signUp(formData: FormData) {
-    const response = await fetch('http://localhost:8080/api/usuarios', {
+    const response = await fetch('https://spring-estructuras.onrender.com/api/usuarios', {
         method: 'POST',
         body: JSON.stringify(Object.fromEntries(formData)),
         headers: {
