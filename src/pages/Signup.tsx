@@ -33,6 +33,8 @@ export default function SignUpForm() {
         formData.append('fechaRegistro', new Date().toISOString())
         formData.append('puntosLiga', '0')
         formData.append('foto', 'https://i.pravatar.cc/300')
+        formData.append('biografia', 'biografia')
+        formData.append('semestreCursando', '1')
 
         try {
             await signUp(formData)
@@ -46,7 +48,7 @@ export default function SignUpForm() {
     return (
         <div className="flex items-center justify-center min-h-screen bg-gray-100">
             <div className="text-black w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-md">
-                <h1 className="text-2xl font-bold text-center">Sign Up</h1>
+                <h1 className="text-2xl font-bold text-center">Registrate</h1>
                 <form onSubmit={onSubmit} className="space-y-4">
                     <div>
                         <Label htmlFor="nombre" className='text-black'>Nombre</Label>
@@ -64,16 +66,16 @@ export default function SignUpForm() {
                         <Label htmlFor="foto">Foto URL</Label>
                         <Input id="foto" name="foto" type="url" required />
                     </div> */}
-                    <div>
+                    {/* <div>
                         <Label htmlFor="biografia">Biografía</Label>
                         <Textarea id="biografia" name="biografia" required />
                     </div>
                     <div>
                         <Label htmlFor="semestreCursando">Nivel de semestre</Label>
                         <Input id="semestreCursando" name="semestreCursando" type="number" required />
-                    </div>
+                    </div> */}
                     <Button type="submit" className="w-full" disabled={isLoading}>
-                        {isLoading ? "Signing up..." : "Sign Up"}
+                        {isLoading ? "Registrando..." : "Registrarse"}
                     </Button>
                 </form>
             </div>

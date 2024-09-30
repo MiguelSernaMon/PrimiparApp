@@ -52,16 +52,16 @@ export default function LoginPage() {
                     <div className="flex items-center justify-center mb-4">
                         <LockIcon className="h-12 w-12 text-primary" />
                     </div>
-                    <CardTitle className="text-2xl font-bold text-center">Login</CardTitle>
+                    <CardTitle className="text-2xl font-bold text-center">Iniciar Sesión</CardTitle>
                     <CardDescription className="text-center">
-                        Enter your email and password to access your account
+                        Ingresa tu correo y contraseña para iniciar sesión
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
                     <form onSubmit={handleSubmit}>
                         <div className="space-y-4">
                             <div className="space-y-2">
-                                <Label htmlFor="email">Email</Label>
+                                <Label htmlFor="email">Correo Electrónico</Label>
                                 <Input
                                     id="email"
                                     type="email"
@@ -72,7 +72,7 @@ export default function LoginPage() {
                                 />
                             </div>
                             <div className="space-y-2">
-                                <Label htmlFor="password">Password</Label>
+                                <Label htmlFor="password">Contraseña</Label>
                                 <Input
                                     id="password"
                                     type="password"
@@ -85,15 +85,15 @@ export default function LoginPage() {
                         {/* Display error message if any */}
                         {errorMessage && <p className="text-red-500 text-center">{errorMessage}</p>}
                         <Button className="w-full mt-4" type="submit">
-                            Sign In
+                            Iniciar Sesión
                         </Button>
                     </form>
                 </CardContent>
                 <CardFooter>
                     <div className="text-sm text-center text-gray-500">
-                        Don't have an account?{' '}
+                        ¿No tienes una cuenta?{' '}
                         <a href="/sign-up" className="text-primary hover:underline">
-                            Sign Up
+                            Registrate
                         </a>
                     </div>
                 </CardFooter>
