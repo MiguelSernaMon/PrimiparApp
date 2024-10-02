@@ -14,7 +14,7 @@ export default function LoginPage() {
         e.preventDefault()
         // Handle login logic here
         console.log('Login attempted with:', email, password)
-        fetch('https://spring-estructuras.onrender.com/api/usuarios/login', {
+        fetch('http://localhost:8080/api/usuarios/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
