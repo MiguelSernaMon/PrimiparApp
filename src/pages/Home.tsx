@@ -60,19 +60,15 @@ export default function CourseDashboard() {
         <nav className="mt-6">
           <a href="#" className="flex items-center py-2 px-4 bg-green-100 text-green-700">
             <Book className="mr-3 h-5 w-5" />
-            Courses
+            Cursos
           </a>
           <a href="#" className="flex items-center py-2 px-4 text-gray-600 hover:bg-gray-100">
             <GraduationCap className="mr-3 h-5 w-5" />
-            My Learning
+            Mi Aprendizaje
           </a>
           <a href="#" className="flex items-center py-2 px-4 text-gray-600 hover:bg-gray-100">
             <BarChart className="mr-3 h-5 w-5" />
-            Progress
-          </a>
-          <a href="#" className="flex items-center py-2 px-4 text-gray-600 hover:bg-gray-100">
-            <Settings className="mr-3 h-5 w-5" />
-            Settings
+            Progreso
           </a>
         </nav>
       </div>
