@@ -9,17 +9,19 @@ export default function LoginPage() {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [errorMessage, setErrorMessage] = useState('')
-
+    const encodeString = (input: string) => {
+        return btoa(input);
+    }
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault()
         // Handle login logic here
-        console.log('Login attempted with:', email, password)
+
         fetch('http://localhost:8080/api/usuarios/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ email, pass: password }), // Adjusted to match the expected request body
+            body: JSON.stringify({ email, pass: encodeString(password) }), // Adjusted to match the expected request body
         })
             .then(response => {
                 // Check if the response is OK (status 200-299)

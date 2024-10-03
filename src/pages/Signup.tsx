@@ -1,5 +1,4 @@
 'use client'
-import { useNavigate } from 'react-router-dom';
 import { useState } from 'react'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -22,9 +21,13 @@ async function signUp(formData: FormData) {
     return response.json()
 }
 
+// Function to encode a string to Base64
+function encodeString(input: string) {
+    return btoa(input);
+}
+
 export default function SignUpForm() {
     const [isLoading, setIsLoading] = useState(false)
-    const navigate = useNavigate();
     async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault()
         setIsLoading(true)
@@ -36,10 +39,16 @@ export default function SignUpForm() {
         formData.append('biografia', 'biografia')
         formData.append('semestreCursando', '1')
 
+        // Encode the password
+        const password = formData.get('password')
+        if (password) {
+            formData.set('password', encodeString(password as string)); // Use set to overwrite the password
+        }
         try {
             await signUp(formData)
-            navigate('/')
+            window.location.href = '/login'
         } catch (error) {
+            console.error("Sign up error:", error)
         } finally {
             setIsLoading(false)
         }
@@ -62,18 +71,6 @@ export default function SignUpForm() {
                         <Label htmlFor="password">Contraseña</Label>
                         <Input id="password" name="password" type="password" required />
                     </div>
-                    {/* <div>
-                        <Label htmlFor="foto">Foto URL</Label>
-                        <Input id="foto" name="foto" type="url" required />
-                    </div> */}
-                    {/* <div>
-                        <Label htmlFor="biografia">Biografía</Label>
-                        <Textarea id="biografia" name="biografia" required />
-                    </div>
-                    <div>
-                        <Label htmlFor="semestreCursando">Nivel de semestre</Label>
-                        <Input id="semestreCursando" name="semestreCursando" type="number" required />
-                    </div> */}
                     <Button type="submit" className="w-full" disabled={isLoading}>
                         {isLoading ? "Registrando..." : "Registrarse"}
                     </Button>
