@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Redirect } from 'react-router-dom';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import SignUpPage from './pages/Signup';
+import { IonReactRouter } from '@ionic/react-router';
+import { IonRouterOutlet } from '@ionic/react';
 
 const App: React.FC = () => {
   // Manage authentication state
@@ -24,14 +26,14 @@ const App: React.FC = () => {
   };
 
   return (
-    <Router>
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/sign-up" element={<SignUpPage />} />
-        <Route path="/home" element={isAuthenticated ? <Home /> : <Navigate to="/login" />} />
-        <Route path="/" element={<Navigate to="/login" />} />
-      </Routes>
-    </Router>
+    <IonReactRouter>
+      <IonRouterOutlet>
+        <Route path="/login" component={Login} />
+        <Redirect exact from="/" to="/login" />
+        <Route path="/sign-up" component={Login} />
+        <Route path="/home" component={Home} />
+      </IonRouterOutlet>
+    </IonReactRouter>
   );
 };
 

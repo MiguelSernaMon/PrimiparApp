@@ -32,6 +32,7 @@ export default function LoginPage() {
                 if (isLoginSuccessful) {
                     // Handle successful login
                     console.log('Login successful');
+                    window.location.href = '/home';
                     // Redirect or update state as needed
                 } else {
                     // Handle login failure
