@@ -6,8 +6,13 @@ import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
 export default function LessonsDashboard() {
+    interface Lesson {
+        id: number;
+        nombre: string;
+        descripcion: string;
+    }
     const courseId = localStorage.getItem('courseId');
-    const [lessons, setLessons] = useState([]);
+    const [lessons, setLessons] = useState<Lesson[]>([]);
 
     const fetchLessonsByCourse = async () => {
         try {
@@ -39,37 +44,9 @@ export default function LessonsDashboard() {
     }, [])
 
 
-    const fetchCourseLesson = async () => {
-        try {
-            const response = await fetch('http://localhost:8080/api/lessons', {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({}),
-            });
 
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
 
-            const data = await response.json();
-            setCourses(data); // Set the courses state with the fetched data
-        } catch (error) {
-            console.error('Error fetching courses:', error);
-        }
-    };
 
-    interface Course {
-        id: number;
-        nombre: string;
-        descripcion: string;
-    }
-
-    const [courses, setCourses] = useState<Course[]>([])
-    useEffect(() => {
-        fetchCourses();
-    }, [])
 
     const [showLogout, setShowLogout] = useState(false);
     const handleAvatarClick = () => {
@@ -146,7 +123,7 @@ export default function LessonsDashboard() {
                 <main className="flex-1 overflow-y-auto p-4">
                     <h2 className="text-2xl font-semibold mb-4 text-gray-900">Mis cursos</h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        {courses.map((course) => (
+                        {lessons.map((course) => (
                             <Card key={course.id}>
                                 <CardHeader>
                                     <CardTitle>{course.nombre}</CardTitle>
