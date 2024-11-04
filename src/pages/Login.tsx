@@ -31,6 +31,11 @@ export default function LoginPage() {
                 return response.json(); // Parse the JSON
             })
             .then(isLoginSuccessful => {
+                console.log(isLoginSuccessful);
+                const { authenticated } = isLoginSuccessful;
+                const { userId } = isLoginSuccessful;
+                localStorage.setItem('authenticated', authenticated);
+                localStorage.setItem('userId', userId);
                 if (isLoginSuccessful) {
                     // Handle successful login
                     console.log('Login successful');

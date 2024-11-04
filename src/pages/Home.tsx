@@ -6,7 +6,13 @@ import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
 export default function CourseDashboard() {
-
+  useEffect(() => {
+    const authenticated = localStorage.getItem('authenticated');
+    const userId = localStorage.getItem('userId');
+    if (!authenticated || authenticated !== 'true' || !userId) {
+      window.location.href = '/login';
+    }
+  }, [])
   const fetchCourses = async () => {
     try {
       const response = await fetch('http://localhost:8080/api/cursos', {
@@ -38,16 +44,19 @@ export default function CourseDashboard() {
     fetchCourses();
   }, [])
 
-  console.log(courses);
+  const [showLogout, setShowLogout] = useState(false);
+  const handleAvatarClick = () => {
+    setShowLogout(!showLogout);
+  };
+  const handleLogout = () => {
+    localStorage.setItem('authenticated', 'false');
+    localStorage.removeItem('userId');
+    window.location.href = '/login';
+  };
 
-
-
-  // const courses = [
-  //   { id: 1, name: "Introduction to React", progress: 75 },
-  //   { id: 2, name: "Advanced JavaScript", progress: 40 },
-  //   { id: 3, name: "UI/UX Design Principles", progress: 90 },
-  //   { id: 4, name: "Node.js Fundamentals", progress: 60 },
-  // ]
+  const handleCourseClick = (courseId: number) => {
+    window.location.href = `/lecciones/${courseId}`;
+  }
 
   return (
 
@@ -55,7 +64,7 @@ export default function CourseDashboard() {
       {/* Sidebar */}
       <div className="w-64 bg-white shadow-md">
         <div className="p-4">
-          <h1 className="text-2xl font-bold text-green-600">LearnHub</h1>
+          <h1 className="text-2xl font-bold text-green-600">PrimiparApp</h1>
         </div>
         <nav className="mt-6">
           <a href="#" className="flex items-center py-2 px-4 bg-green-100 text-green-700">
@@ -89,10 +98,20 @@ export default function CourseDashboard() {
               <Bell className="h-5 w-5 text-black" />
               <span className="sr-only">Notificaciones</span>
             </Button>
-            <Avatar>
+            <Avatar onClick={handleAvatarClick} className='cursor-pointer' >
               <AvatarImage src="https://github.com/shadcn.png" />
               <AvatarFallback>CN</AvatarFallback>
             </Avatar>
+            {showLogout && (
+
+              <Button
+                onClick={handleLogout}
+                className="absolute top-14 right-[0.3rem] mt-2 bg-red-500 text-white p-2 rounded shadow-md"
+              >
+                Cerrar Sesión
+              </Button>
+
+            )}
           </div>
         </header>
 
@@ -117,7 +136,7 @@ export default function CourseDashboard() {
                     ></div>
                   </div>
                   <div className="text-sm text-gray-900 py-10">{course.descripcion}</div>
-                  <Button className="w-full mt-4">Continuar</Button>
+                  <Button className="w-full mt-4" onClick={() => handleCourseClick(course.id)}>Continuar</Button>
                 </CardContent>
               </Card>
             ))}
