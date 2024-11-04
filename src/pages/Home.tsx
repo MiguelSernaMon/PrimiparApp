@@ -4,6 +4,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { useHistory } from 'react-router'
+
 
 export default function CourseDashboard() {
   useEffect(() => {
@@ -25,7 +27,7 @@ export default function CourseDashboard() {
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
-
+      const history = useHistory();
       const data = await response.json();
       setCourses(data); // Set the courses state with the fetched data
     } catch (error) {
@@ -55,7 +57,8 @@ export default function CourseDashboard() {
   };
 
   const handleCourseClick = (courseId: number) => {
-    window.location.href = `/lecciones/${courseId}`;
+    localStorage.setItem('courseId', courseId.toString());
+    window.location.href = `/lecciones/`;
   }
 
   return (
