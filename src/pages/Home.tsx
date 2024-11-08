@@ -27,8 +27,9 @@ export default function CourseDashboard() {
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
-      const history = useHistory();
       const data = await response.json();
+      console.log(data);
+
       setCourses(data); // Set the courses state with the fetched data
     } catch (error) {
       console.error('Error fetching courses:', error);
