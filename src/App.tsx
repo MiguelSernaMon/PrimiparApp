@@ -8,28 +8,12 @@ import { IonRouterOutlet } from '@ionic/react';
 
 const App: React.FC = () => {
   // Manage authentication state
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-
-  useEffect(() => {
-    const storedAuth = localStorage.getItem('isAuthenticated');
-    setIsAuthenticated(storedAuth === 'true');
-  }, []);
-
-  const handleLogin = () => {
-    setIsAuthenticated(true);
-    localStorage.setItem('isAuthenticated', 'true');
-  };
-
-  const handleLogout = () => {
-    setIsAuthenticated(false);
-    localStorage.setItem('isAuthenticated', 'false');
-  };
 
   return (
     <IonReactRouter>
       <IonRouterOutlet>
         <Route path="/login" component={Login} />
-        <Redirect exact from="/" to="/login" />
+        <Redirect exact from="/" to="/home" />
         <Route path="/sign-up" component={SignUpPage} />
         <Route path="/home" component={Home} />
       </IonRouterOutlet>
