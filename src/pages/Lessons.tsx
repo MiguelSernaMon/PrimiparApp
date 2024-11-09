@@ -16,7 +16,7 @@ export default function LessonsDashboard() {
 
     const fetchLessonsByCourse = async () => {
         try {
-            const response = await fetch(`http://localhost:8080/api/lessons/${courseId}`, {
+            const response = await fetch(`http://localhost:8080/api/lecciones?courseId=${courseId}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -33,6 +33,7 @@ export default function LessonsDashboard() {
             console.error('Error fetching lessons:', error);
         }
     }
+
     useEffect(() => {
 
         const authenticated = localStorage.getItem('authenticated');
@@ -40,6 +41,8 @@ export default function LessonsDashboard() {
         if (!authenticated || authenticated !== 'true' || !userId) {
             window.location.href = '/login';
         }
+        fetchLessonsByCourse();
+
 
     }, [])
 
@@ -73,7 +76,7 @@ export default function LessonsDashboard() {
                 <nav className="mt-6">
                     <a href="#" className="flex items-center py-2 px-4 bg-green-100 text-green-700">
                         <Book className="mr-3 h-5 w-5" />
-                        Cursos
+                        Lecciones
                     </a>
                     <a href="#" className="flex items-center py-2 px-4 text-gray-600 hover:bg-gray-100">
                         <GraduationCap className="mr-3 h-5 w-5" />
@@ -121,7 +124,7 @@ export default function LessonsDashboard() {
 
                 {/* Course Grid */}
                 <main className="flex-1 overflow-y-auto p-4">
-                    <h2 className="text-2xl font-semibold mb-4 text-gray-900">Mis cursos</h2>
+                    <h2 className="text-2xl font-semibold mb-4 text-gray-900">Lecciones</h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         {lessons.map((course) => (
                             <Card key={course.id}>

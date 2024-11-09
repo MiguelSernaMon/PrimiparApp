@@ -5,6 +5,7 @@ import Login from './pages/Login';
 import SignUpPage from './pages/Signup';
 import { IonReactRouter } from '@ionic/react-router';
 import { IonRouterOutlet } from '@ionic/react';
+import LessonsDashboard from './pages/Lessons';
 
 const App: React.FC = () => {
   // Manage authentication state
@@ -16,6 +17,7 @@ const App: React.FC = () => {
         <Redirect exact from="/" to="/home" />
         <Route path="/sign-up" component={SignUpPage} />
         <Route path="/home" component={Home} />
+        <Route path="/lecciones" component={LessonsDashboard} />
       </IonRouterOutlet>
     </IonReactRouter>
   );
