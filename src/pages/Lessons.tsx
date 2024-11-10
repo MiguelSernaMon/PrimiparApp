@@ -61,8 +61,9 @@ export default function LessonsDashboard() {
         window.location.href = '/login';
     };
 
-    const handleCourseClick = (courseId: number) => {
-        window.location.href = `/lecciones/${courseId}`;
+    const handleCourseClick = (leccionId: number) => {
+        localStorage.setItem('leccionId', leccionId.toString());
+        window.location.href = `/examen/`;
     }
 
     return (
