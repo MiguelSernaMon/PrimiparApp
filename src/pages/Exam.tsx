@@ -41,6 +41,7 @@ export default function ExamPage() {
     const [answers, setAnswers] = useState<Answer[]>([]);
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [showContent, setShowContent] = useState(true);
+    const [isAnswered, setIsAnswered] = useState(false);
 
     const fetchContentsByLesson = async () => {
         try {
@@ -114,6 +115,13 @@ export default function ExamPage() {
         localStorage.setItem('authenticated', 'false');
         localStorage.removeItem('userId');
         window.location.href = '/login';
+    };
+    const handleAnswerSelection = (selectedAnswer: Answer) => {
+        setIsAnswered(true); // Marca como respondida si selecciona una opción
+    };
+
+    const handleTextInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setIsAnswered(e.target.value.trim().length > 0); // Valida si se ha ingresado texto
     };
 
     return (
@@ -225,7 +233,11 @@ export default function ExamPage() {
                                     <p>Dificultad: {currentQuestion.dificultad.nombre}</p>
                                     {currentQuestion.tipoPregunta.nombre === "abierta" && <>
                                         <div className="mt-10"></div>
-                                        <Input type="text" placeholder="Escribe tu respuesta" className="w-full text-gray-900" />
+                                        <Input
+                                            type="text"
+                                            placeholder="Escribe tu respuesta"
+                                            onChange={handleTextInput}
+                                            className="w-full text-gray-900" />
                                     </>}
                                     {currentQuestion.tipoPregunta.nombre === "opcion multiple" && <>
                                         <div className="space-y-2" role="radiogroup" aria-labelledby="answers-label">
@@ -237,6 +249,7 @@ export default function ExamPage() {
                                                     className="w-full text-left justify-start h-auto py-3 px-4"
                                                     role="radio"
                                                     aria-checked="false"
+                                                    onClick={() => handleAnswerSelection(answer)}
                                                 >
                                                     {answer.contenido}
                                                 </Button>
@@ -251,20 +264,31 @@ export default function ExamPage() {
 
                         {/* Navigation Buttons */}
                         <div className="flex justify-between">
-                            <Button
-                                onClick={handlePrevQuestion}
-                                disabled={currentQuestionIndex === 0}
-                                className=" text-white p-2 rounded"
-                            >
-                                Anterior
-                            </Button>
-                            <Button
-                                onClick={handleNextQuestion}
-                                disabled={currentQuestionIndex === questions.length - 1}
-                                className=" text-white p-2 rounded"
-                            >
-                                Siguiente
-                            </Button>
+                            {!(currentQuestionIndex === (questions.length - 1)) && <>
+                                <Button
+                                    onClick={() => {
+                                        handleNextQuestion()
+                                        setIsAnswered(false)
+                                    }}
+                                    disabled={!isAnswered}
+                                    className=" text-white p-2 rounded"
+                                >
+                                    Siguiente
+                                </Button>
+                            </>}
+
+                            {currentQuestionIndex === questions.length - 1 &&
+                                <>
+                                    <Button
+                                        onClick={() => {
+                                            // todo 
+                                            // enviar ultima respuesta
+                                        }}
+                                        className="bg-green-700 text-white p-2 rounded"
+                                    >
+                                        Terminar intento
+                                    </Button>
+                                </>}
                         </div>
                     </>}
 
