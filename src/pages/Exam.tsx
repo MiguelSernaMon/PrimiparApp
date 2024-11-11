@@ -18,8 +18,14 @@ export default function ExamPage() {
         id: number;
         idleccion: number;
         enunciado: string;
-        idTipoPregunta: number;
-        idDificultad: number;
+        tipoPregunta: {
+            id: number;
+            nombre: string;
+        }
+        dificultad: {
+            id: number;
+            nombre: string;
+        }
     }
 
     interface Answer {
@@ -58,6 +64,17 @@ export default function ExamPage() {
         }
     };
 
+    const fetchAnswersByQuestionId = async (questionId: number) => {
+        try {
+            const response = await fetch(`http://localhost:8080/api/respuestas?questionId=${questionId}`);
+            if (!response.ok) throw new Error('Network response was not ok');
+            const data = await response.json();
+            setAnswers(data);
+        } catch (error) {
+            console.error('Error fetching questions:', error);
+        }
+    };
+
     useEffect(() => {
         const authenticated = localStorage.getItem('authenticated');
         const userId = localStorage.getItem('userId');
@@ -67,6 +84,12 @@ export default function ExamPage() {
         fetchContentsByLesson();
         fetchQuestionsByLesson();
     }, []);
+
+    useEffect(() => {
+        if (questions.length > 0) {
+            fetchAnswersByQuestionId(questions[currentQuestionIndex].id);
+        }
+    }, [currentQuestionIndex]);
 
     const handleNextQuestion = () => {
         if (currentQuestionIndex < questions.length - 1) {
@@ -191,14 +214,35 @@ export default function ExamPage() {
 
                     {/* // la parte de las preguntas jejeje */}
                     {!showContent && <>
+                        {console.log(currentQuestion)}
                         {currentQuestion ? (
                             <Card key={currentQuestion.id} className="mb-6">
                                 <CardHeader>
                                     <CardTitle>{currentQuestion.enunciado}</CardTitle>
                                 </CardHeader>
                                 <CardContent>
-                                    <p>Tipo de Pregunta: {currentQuestion.idTipoPregunta}</p>
-                                    <p>Dificultad: {currentQuestion.idDificultad}</p>
+                                    <p>Tipo de Pregunta: {currentQuestion.tipoPregunta.nombre}</p>
+                                    <p>Dificultad: {currentQuestion.dificultad.nombre}</p>
+                                    {currentQuestion.tipoPregunta.nombre === "abierta" && <>
+                                        <div className="mt-10"></div>
+                                        <Input type="text" placeholder="Escribe tu respuesta" className="w-full text-gray-900" />
+                                    </>}
+                                    {currentQuestion.tipoPregunta.nombre === "opcion multiple" && <>
+                                        <div className="space-y-2" role="radiogroup" aria-labelledby="answers-label">
+                                            <p id="answers-label" className="sr-only">Selecciona una respuesta:</p>
+                                            {answers.map((answer, index) => (
+                                                <Button
+                                                    key={index}
+                                                    variant="outline"
+                                                    className="w-full text-left justify-start h-auto py-3 px-4"
+                                                    role="radio"
+                                                    aria-checked="false"
+                                                >
+                                                    {answer.contenido}
+                                                </Button>
+                                            ))}
+                                        </div>
+                                    </>}
                                 </CardContent>
                             </Card>
                         ) : (
