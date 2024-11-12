@@ -29,6 +29,7 @@ export default function ExamPage() {
     }
 
     interface Answer {
+        id: number;
         idPregunta: number;
         esCorrecta: boolean;
         contenido: string;
@@ -42,6 +43,8 @@ export default function ExamPage() {
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [showContent, setShowContent] = useState(true);
     const [isAnswered, setIsAnswered] = useState(false);
+    const [selectedAnswer, setSelectedAnswer] = useState<Answer | null>(null);
+    const [userInfo, setUserInfo] = useState<any>(null);
 
     const fetchContentsByLesson = async () => {
         try {
@@ -95,6 +98,8 @@ export default function ExamPage() {
     const handleNextQuestion = () => {
         if (currentQuestionIndex < questions.length - 1) {
             setCurrentQuestionIndex(currentQuestionIndex + 1);
+            setIsAnswered(false);
+            setSelectedAnswer(null);
         }
     };
 
@@ -116,8 +121,54 @@ export default function ExamPage() {
         localStorage.removeItem('userId');
         window.location.href = '/login';
     };
-    const handleAnswerSelection = (selectedAnswer: Answer) => {
-        setIsAnswered(true); // Marca como respondida si selecciona una opción
+
+    const sendAnswer = async (answer: Answer) => {
+        try {
+            const usuario = localStorage.getItem('userId');
+            const response = await fetch(`http://localhost:8080/api/respuestas-usuario?idUsuario=${usuario}&idRespuesta=${answer.id}&isCorrect=${answer.esCorrecta}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json', // Set content type for JSON
+                },
+                body: JSON.stringify({
+                    idUsuario: 13,
+                    idRespuesta: 1,
+                    isCorrect: true,
+                }), // Send data in JSON format
+            });
+
+            if (!response.ok) throw new Error('Network response was not ok');
+
+            const data = await response.json();
+            setAnswers(data);
+        } catch (error) {
+            console.error('Error sending answer:', error);
+        }
+    }
+
+    const fetchUserInfo = async (userId: string | null) => {
+        try {
+            const response = await fetch(`http://localhost:8080/api/usuarios/${userId}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json', // Set content type for JSON
+                }
+            });
+
+        } catch (error) {
+            console.error('Error fetching user:', error);
+        }
+    }
+
+    const handleAnswerSelection = async (answer: Answer) => {
+        sendAnswer(answer);
+        const usuario = localStorage.getItem('userId');
+        fetchUserInfo(usuario);
+
+        if (!isAnswered) {
+            setIsAnswered(true);
+            setSelectedAnswer(answer);
+        }
     };
 
     const handleTextInput = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -231,31 +282,29 @@ export default function ExamPage() {
                                 <CardContent>
                                     <p>Tipo de Pregunta: {currentQuestion.tipoPregunta.nombre}</p>
                                     <p>Dificultad: {currentQuestion.dificultad.nombre}</p>
-                                    {currentQuestion.tipoPregunta.nombre === "abierta" && <>
-                                        <div className="mt-10"></div>
-                                        <Input
-                                            type="text"
-                                            placeholder="Escribe tu respuesta"
-                                            onChange={handleTextInput}
-                                            className="w-full text-gray-900" />
-                                    </>}
-                                    {currentQuestion.tipoPregunta.nombre === "opcion multiple" && <>
-                                        <div className="space-y-2" role="radiogroup" aria-labelledby="answers-label">
-                                            <p id="answers-label" className="sr-only">Selecciona una respuesta:</p>
-                                            {answers.map((answer, index) => (
-                                                <Button
-                                                    key={index}
-                                                    variant="outline"
-                                                    className="w-full text-left justify-start h-auto py-3 px-4"
-                                                    role="radio"
-                                                    aria-checked="false"
-                                                    onClick={() => handleAnswerSelection(answer)}
-                                                >
-                                                    {answer.contenido}
-                                                </Button>
-                                            ))}
-                                        </div>
-                                    </>}
+
+                                    <div className="space-y-2" role="radiogroup" aria-labelledby="answers-label">
+                                        <p id="answers-label" className={`sr-only`} >Selecciona una respuesta:</p>
+                                        {answers.map((answer, index) => (
+                                            <Button
+                                                key={index}
+                                                variant="outline"
+                                                className="w-full text-left justify-start h-auto py-3 px-4"
+                                                role="radio"
+                                                aria-checked="false"
+                                                disabled={isAnswered}
+                                                onClick={() => handleAnswerSelection(answer)}
+                                            >
+                                                {answer.contenido}
+                                            </Button>
+                                        ))}
+                                        {selectedAnswer && (
+                                            <p className={`mt-4 ${selectedAnswer.esCorrecta ? "text-green-700" : "text-red-600"}`}>
+                                                {selectedAnswer.esCorrecta ? "🤩" : "😖"} {selectedAnswer.feedback}
+                                            </p>
+                                        )}
+                                    </div>
+
                                 </CardContent>
                             </Card>
                         ) : (
@@ -282,7 +331,7 @@ export default function ExamPage() {
                                     <Button
                                         onClick={() => {
                                             // todo 
-                                            // enviar ultima respuesta
+                                            // nokas, es el final del examen
                                         }}
                                         className="bg-green-700 text-white p-2 rounded"
                                     >
